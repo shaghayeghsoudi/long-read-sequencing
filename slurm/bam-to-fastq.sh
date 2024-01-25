@@ -1,8 +1,8 @@
 #!/bin/bash -l
 # ---------------------------------------------------------------------
-# SLURM script for fastqc
+# SLURM script for converting bam to fastq
 # ---------------------------------------------------------------------
-#SBATCH --job-name==fastqc
+#SBATCH --job-name==bamtofastq
 #SBATCH --cpus-per-task=1
 #SBATCH --array=1-2
 #SBATCH --mem-per-cpu=40G
