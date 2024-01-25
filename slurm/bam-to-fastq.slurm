@@ -39,19 +39,20 @@ ROOT_DIR=/oak/stanford/groups/emoding/sequencing/fastq/Pacbio2/p1/usftp21.novoge
 CONFIG=${ROOT_DIR}/config.txt
 
 # Extract the sample name for the current $SLURM_ARRAY_TASK_ID
-BASE=$(awk -v ArrayTaskID=$SLURM_ARRAY_TASK_ID '$1==ArrayTaskID {print $3}' $CONFIG)
-SAMPLE_DIR=${ROOT_DIR}/${BASE}
+SAMPLE=$(awk -v ArrayTaskID=$SLURM_ARRAY_TASK_ID '$1==ArrayTaskID {print $3}' $CONFIG)
+SAMPLE_DIR=${ROOT_DIR}/${SAMPLE}
 
 BASE_NAME=$(awk -v ArrayTaskID=$SLURM_ARRAY_TASK_ID '$1==ArrayTaskID {print $2}' $CONFIG)
 
-SAMPLE_NAME=${SAMPLE_DIR}/${BASE_NAME}.hifi_reads.bam
+SAMPLE_BAM=${SAMPLE_DIR}/${BASE_NAME}.hifi_reads.bam
 
 
-OUTPUT_DIR=${ROOT_DIR}/fastqs_from_bams/${SAMPLE_DIR}
+OUTPUT_DIR=/oak/stanford/groups/emoding/sequencing/fastq/Pacbio2/p1/usftp21.novogene.com/HiFi_data/fastqs_from_bams
 mkdir -p ${OUTPUT_DIR}
 
 
-samtools fastq ${SAMPLE_NAME} > ${OUTPUT_DIR}/${SAMPLE_DIR}.fastq
+
+bedtools bamtofastq -i ${SAMPLE_BAM} -fq ${OUTPUT_DIR}/${SAMPLE}.fastq
 
 # ---------------------------------------------------------------------
 echo "Job finished with exit code $? at: `date`"
