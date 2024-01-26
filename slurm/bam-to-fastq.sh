@@ -53,6 +53,8 @@ mkdir -p ${OUTPUT_DIR}
 
 
 bedtools bamtofastq -i ${SAMPLE_BAM} -fq ${OUTPUT_DIR}/${SAMPLE}.fastq
+gzip -c ${OUTPUT_DIR}/${SAMPLE}.fastq > ${OUTPUT_DIR}/${SAMPLE}.fastq.gz
+rm *.fastq
 
 # ---------------------------------------------------------------------
 echo "Job finished with exit code $? at: `date`"
