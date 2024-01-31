@@ -1,0 +1,51 @@
+Get overlapping SVs between technologies
+
+We can get information about which SVs overlap between the different VCF files by using SURVIVOR. SURVIVOR is designed to merge VCF files of SVs from different individuals or species and it indicates which ones are present in all VCF files. We can use the same tool to compare the technologies and treat them as they were different individuals/samples. Several parameters can be used to tune the merging.
+
+# link the VFC files
+ln -s ../Sniffles/PacBio/SV_PB_filtered_gaps.vcf .
+ln -s ../Sniffles/Nanopore/SV_ONT_filtered_gaps.vcf .
+ln -s ../Manta/SV_IL_filtered_gaps.vcf .
+
+# list the VCF files to merge
+ls SV*.vcf > list_vcf
+
+SURVIVOR merge list_vcf 1000 1 1 0 0 50 merged_filtered.vcf
+
+Here the filtering parameters of SURVIVOR are the following:
+
+Max distance between breakpoints: 1000
+
+Minimum number of supporting caller: 1
+
+Take the type into account (1==yes, else no): 1
+
+Take the strands of SVs into account (1==yes, else no): 0
+
+Estimate distance based on the size of SV (1==yes, else no): 0
+
+Minimum size of SVs to be taken into account: 50
+
+Inspect the output file merged_filtered.vcf.
+
+
+Plot the comparisons
+
+Code from: https://github.com/fritzsedlazeck/SURVIVOR/wiki#plotting-the-comparison-of-multiple-input-vcf-files-after-merging
+
+Extract the overlap information like this:
+
+perl -ne 'print "$1\n" if /SUPP_VEC=([^,;]+)/' merged_filtered.vcf | sed -e 's/\(.\)/\1 /g' > merged_filtered_overlapp.txt
+
+
+#### venn diagram in r
+library(VennDiagram)
+t=read.table("~/Dropbox/cancer_reserach/sarcoma/sarcoma_analysis/long_reads/nanopore1/sv_calling/survivor/survivor_3matched_SVLEN100_DIS500/3_merged_overlapp.txt",header=F)
+venn.diagram(list
+             (cuteSV=which(t[,1]==1), nanoSV=which(t[,2]==1), Sniffles=which(t[,3]==1),svim=which(t[,4]==1)) , 
+             fill = c("green", "orange", "blue","tomato") , 
+             alpha = c(0.5, 0.5, 0.5, 0.5), 
+             cex = 2, lty =2, ext.text=TRUE, 
+             filename = "~/Dropbox/cancer_reserach/sarcoma/sarcoma_analysis/long_reads/nanopore1/sv_calling/survivor/survivor_3matched_SVLEN100_DIS500/3_ONT.jpeg")
+
+
