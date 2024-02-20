@@ -6,3 +6,8 @@ my_data
 ggplot(my_data, aes(x, y, fill = m)) + geom_split_violin()
 load("/Users/shsoudi/Downloads/ldt_long.rda")
 ldt_long.rda
+library(StructuralVariantAnnotation)
+vcf <- VariantAnnotation::readVcf(system.file("extdata", "gridss.vcf", package = "StructuralVariantAnnotation"))
+vcf
+gr <- breakpointRanges(vcf)
+gr
